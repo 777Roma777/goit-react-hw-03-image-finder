@@ -1,12 +1,11 @@
 import { Component } from 'react';
 import { fetchImages } from 'Service/api';
+import { RotatingLines } from 'react-loader-spinner';
 import Searchbar from 'components/Searchbar/searchBar';
 import ImageGalleryItem from 'components/ImageGalleryItem/imageGalleryItem';
 import ImageGallery from 'components/ImageGallery/imageGallery';
 import Button from 'components/Button/button';
 import Modal from 'components/Modal/modal';
-import { RotatingLines } from 'react-loader-spinner';
-
 
 export class App extends Component {
   state = {
@@ -35,9 +34,6 @@ export class App extends Component {
     }
   };
 
-  
-
-  // Функція для завантаження додаткових зображень
   loadMoreImages = async () => {
     const { query, page } = this.state;
     this.setState({ isLoading: true });
@@ -49,13 +45,12 @@ export class App extends Component {
         page: prevState.page + 1,
       }));
     } catch (error) {
-      console.error('Помилка пошуку більше зображень:', error);
+      console.error('Помилка load more:', error);
     } finally {
       this.setState({ isLoading: false });
     }
   };
 
-  // Функція для відкриття модального вікна з обраним зображенням
   openModal = selectedImage => {
     this.setState({ selectedImage });
   };
@@ -80,8 +75,8 @@ export class App extends Component {
             />
           ))}
         </ImageGallery>
-        {isLoading ? ( 
-          <RotatingLines/>
+        {isLoading ? (
+          <RotatingLines />
         ) : (
           images.length > 0 && <Button onClick={this.loadMoreImages} />
         )}
