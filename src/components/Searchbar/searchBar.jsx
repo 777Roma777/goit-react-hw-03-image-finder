@@ -29,7 +29,7 @@ export default class SearchBar extends Component {
             onChange={this.handleChange}
           />
           <button type="submit" className={css.button}>
-            <span className={css.button_label}>Пошук</span>
+            <span className={css.button_label}>Search</span>
           </button>
         </form>
       </header>

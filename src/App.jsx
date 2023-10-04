@@ -16,39 +16,36 @@ export class App extends Component {
     isLoading: false,
   };
 
-  handleSearch = async query => {
+  async componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    if (page !== prevState.page || query !== prevState.query) {
+      this.setState({ isLoading: true });
+
+      try {
+        const data = await fetchImages(query, page);
+        this.setState(prevState => ({
+          images: page === 1 ? data.hits : [...prevState.images, ...data.hits],
+        }));
+      } catch (error) {
+        console.error('Error requesting images:', error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+  }
+
+  handleSearch = query => {
     this.setState({
       query,
       images: [],
       page: 1,
-      isLoading: true,
     });
-
-    try {
-      const data = await fetchImages(query, 1);
-      this.setState({ images: data.hits });
-    } catch (error) {
-      console.error('Помилка пошуку зображень:', error);
-    } finally {
-      this.setState({ isLoading: false });
-    }
   };
 
-  loadMoreImages = async () => {
-    const { query, page } = this.state;
-    this.setState({ isLoading: true });
-
-    try {
-      const data = await fetchImages(query, page + 1);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...data.hits],
-        page: prevState.page + 1,
-      }));
-    } catch (error) {
-      console.error('Помилка load more:', error);
-    } finally {
-      this.setState({ isLoading: false });
-    }
+  loadMoreImages = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
 
   openModal = selectedImage => {
